@@ -40,8 +40,9 @@ f1-strategy-intelligence/
 
 ## This project is a continuation of
 
-[F1 Pit Stop Predictor](https://github.com/emirhannkilic/pitstop-predictor) — V1 used
-a simulation-based dataset and a NumPy neural network. This V2 moves to real telemetry
+[F1 Pit Stop Predictor](https://github.com/emirhannkilic/pitstop-predictor)
+
+ — V1 used a simulation-based dataset and a NumPy neural network. This V2 moves to real telemetry
 data and a production-ready stack.
 
 ---
