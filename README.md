@@ -21,7 +21,7 @@ In active development — Sprint 1 in progress
 
 ## Project Structure
 
-```
+
 f1-strategy-intelligence/
 ├── api/              # FastAPI backend
 ├── dashboard/        # React frontend
@@ -34,7 +34,7 @@ f1-strategy-intelligence/
 ├── strategy/         # ML model + strategy engine
 └── tests/            # Unit tests   
 
-```
+
 
 ---
 
