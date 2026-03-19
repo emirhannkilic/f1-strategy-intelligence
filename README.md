@@ -1,4 +1,3 @@
-```markdown
 # F1 Strategy Intelligence System
 
 Real Formula 1 telemetry data → Race strategy recommendations
@@ -20,7 +19,7 @@ In active development — Sprint 1 in progress
 ---
 
 ## Project Structure
-
+```
 
 f1-strategy-intelligence/
 ├── api/              # FastAPI backend
@@ -34,18 +33,15 @@ f1-strategy-intelligence/
 ├── strategy/         # ML model + strategy engine
 └── tests/            # Unit tests   
 
-
+```
 
 ---
 
 ## This project is a continuation of
 
-[F1 Pit Stop Predictor](https://github.com/emirhannkilic/pitstop-predictor)
-
- — V1 used a simulation-based dataset and a NumPy neural network. This V2 moves to real telemetry
+[F1 Pit Stop Predictor](https://github.com/emirhannkilic/pitstop-predictor) — V1 used a simulation-based dataset and a NumPy neural network. This V2 moves to real telemetry
 data and a production-ready stack.
 
 ---
 
-*Built by Emirhan Kılıç — Computer Engineering, 3rd year*
-```
+**Built by Emirhan Kılıç — Computer Engineering, 3rd year**
