@@ -1,6 +1,6 @@
 # F1 Strategy Intelligence System
 
-Real Formula 1 telemetry data → Race strategy recommendations
+A race strategy recommendation system built on real Formula 1 telemetry data.
 
 A machine learning system that analyzes real F1 telemetry data via the FastF1 API
 and recommends optimal pit stop windows using a PyTorch multi-output model.
