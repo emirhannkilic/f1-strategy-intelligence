@@ -2,6 +2,7 @@ import fastf1
 import pandas as pd
 from pathlib import Path
 import logging
+import time
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
@@ -39,8 +40,16 @@ def fetch_race_laps(year: int, round_number: int) -> pd.DataFrame | None:
         return laps
 
     except Exception as e:
-        logger.warning(f"FAILED {year} R{round_number}: {e}")
-        return None
+        if "RateLimitExceeded" in str(type(e).__name__) or "500 calls" in str(e):
+                wait_minutes = 10
+                logger.warning(f"Rate limit hit. Waiting {wait_minutes} minutes...")
+                time.sleep(wait_minutes * 60)
+        else:
+            logger.warning(f"FAILED {year} R{round_number}: {e}")
+            return None
+        
+    logger.warning(f"FAILED {year} R{round_number}: {e}")
+    return None
 
 
 def fetch_season(year: int) -> pd.DataFrame:
@@ -52,6 +61,7 @@ def fetch_season(year: int) -> pd.DataFrame:
         df = fetch_race_laps(year, int(event["RoundNumber"]))
         if df is not None:
             all_laps.append(df)
+        time.sleep(2) # sleep for 2 seconds to avoid rate limiting
 
     if not all_laps:
         return pd.DataFrame()
@@ -64,4 +74,5 @@ def fetch_season(year: int) -> pd.DataFrame:
 
 
 if __name__ == "__main__":
-    fetch_season(2023)
+    for year in SEASONS:
+        fetch_season(year)
