@@ -59,8 +59,8 @@ def add_gap_features(df: pd.DataFrame) -> pd.DataFrame:
     df = df.sort_values(["Year", "RoundNumber", "LapNumber", "Position"])
     df = df.reset_index(drop=True)
 
-    df["gap_ahead"] = None
-    df["gap_behind"] = None
+    df["gap_ahead"] = np.nan
+    df["gap_behind"] = np.nan
 
     for (year, round_num, lap), group in df.groupby(["Year", "RoundNumber", "LapNumber"]):
         sorted_group = group.sort_values("Position")
@@ -99,32 +99,25 @@ def encode_compound(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-# label = 1 if the driver pits within the next 3 laps
-# this teaches the model to recognize pre-pit conditions
+# label = 1 if the driver pits within the next 3 laps.
 
 def add_outcome_label(df: pd.DataFrame) -> pd.DataFrame:
+
     df = df.copy()
     df = df.sort_values(["Year", "RoundNumber", "Driver", "LapNumber"])
+    df = df.reset_index(drop=True)
+    df["label"] = 0
 
-    def label_group(group):
-        group = group.copy()
-        group["label"] = 0
-
+    for (year, round_num, driver), group in df.groupby(["Year", "RoundNumber", "Driver"]):
         stint_changes = group["Stint"].diff() > 0
         pit_laps_idx = group.index[stint_changes]
 
         for idx in pit_laps_idx:
             loc = group.index.get_loc(idx)
-            # Mark the 3 laps before the pit stop as label=1
             start = max(0, loc - 3)
             pre_pit_indices = group.index[start:loc]
-            group.loc[pre_pit_indices, "label"] = 1
+            df.loc[pre_pit_indices, "label"] = 1
 
-        return group
-
-    df = df.groupby(
-        ["Year", "RoundNumber", "Driver"], group_keys=False
-        ).apply(lambda g: label_group(g), include_groups=False)
     return df
 
 # select and rename final feature columns
@@ -173,4 +166,5 @@ def process_season(year: int) -> pd.DataFrame:
 
 
 if __name__ == "__main__":
-    process_season(2023)
+    for year in [2019, 2020, 2021, 2022, 2023, 2024]:
+        process_season(year)
