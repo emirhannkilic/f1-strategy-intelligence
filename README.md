@@ -16,6 +16,20 @@ In active development — Sprint 2 in progress
 
 ---
 
+## Model Performance
+
+Trained on 2019–2023 seasons, evaluated on 2024 season (held-out test set).
+
+| Metric | Result |
+|--------|--------|
+| Test Recall | 0.965 |
+| Test Precision | 0.505 |
+| Training Data | ~76.000 laps (6 seasons) |
+| Architecture | PyTorch multi-output, shared encoder + 3 heads |
+
+> High recall is prioritized — the model is designed to avoid missing pit windows
+> rather than minimizing false positives.
+
 ## Project Structure
 ```
 
