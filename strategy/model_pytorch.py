@@ -28,7 +28,6 @@ class F1StrategyModel(nn.Module):
             nn.Linear(64, 32),
             nn.ReLU(),
             nn.Linear(32, 1),
-            nn.Sigmoid()
         )
 
         # pit window head (start and end lap)

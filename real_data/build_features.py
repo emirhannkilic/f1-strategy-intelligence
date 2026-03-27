@@ -114,7 +114,7 @@ def add_outcome_label(df: pd.DataFrame) -> pd.DataFrame:
 
         for idx in pit_laps_idx:
             loc = group.index.get_loc(idx)
-            start = max(0, loc - 3)
+            start = max(0, loc - 5)
             pre_pit_indices = group.index[start:loc]
             df.loc[pre_pit_indices, "label"] = 1
 
