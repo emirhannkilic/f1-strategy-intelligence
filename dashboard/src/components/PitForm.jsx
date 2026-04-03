@@ -91,17 +91,15 @@ export default function PitForm({ onSubmit, loading }) {
           <label>Track Temp (°C)</label>
           <input type="number" step="0.1" name="track_temp" value={form.track_temp} onChange={handleChange} />
         </div>
-        <div className="form-group checkbox-group">
-          <label>
+        <div className="form-group checkbox-row" style={{gridColumn: "span 2", flexDirection: "row", gap: "2rem", alignItems: "center", justifyContent: "flex-start"}}>
+          <label style={{display: "flex", alignItems: "center", gap: "0.5rem", cursor: "pointer"}}>
             <input type="checkbox" name="safety_car_active" checked={form.safety_car_active} onChange={handleChange} />
             Safety Car Active
           </label>
-        </div>
-        <div className="form-group checkbox-group">
-          <label>
+         <label style={{display: "flex", alignItems: "center", gap: "0.5rem", cursor: "pointer"}}>
             <input type="checkbox" name="rain" checked={form.rain} onChange={handleChange} />
             Rain
-          </label>
+         </label>
         </div>
       </div>
 
