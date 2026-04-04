@@ -279,3 +279,82 @@ body {
     font-size: 1.75rem;
   }
 }
+
+.nav {
+  display: flex;
+  gap: 2rem;
+  padding: 1rem 2rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.nav a {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: color 0.15s;
+}
+
+.nav a:hover {
+  color: var(--text);
+}
+
+.driver-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.driver-btn {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  padding: 0.4rem 0.75rem;
+  border-radius: 4px;
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.driver-btn:hover {
+  border-color: var(--accent);
+  color: var(--text);
+}
+
+.driver-btn.active {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: rgba(225, 6, 0, 0.08);
+}
+
+.chart-tooltip {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 0.75rem;
+  border-radius: 4px;
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  line-height: 1.6;
+}
+
+.tooltip-lap {
+  color: var(--text-muted);
+  margin-bottom: 0.25rem;
+}
+
+.tooltip-pit {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.chart-label {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  letter-spacing: 0.15em;
+  margin-bottom: 1rem;
+}
