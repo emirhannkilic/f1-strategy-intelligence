@@ -14,6 +14,9 @@ from strategy.pit_window import recommend_pit_window
 from strategy.sc_opportunity import score_sc_opportunity
 from strategy.degradation import estimate_remaining_stint
 
+import pandas as pd
+from pathlib import Path
+
 app = FastAPI(
     title="F1 Strategy Intelligence API",
     description="Real-time pit stop strategy recommendations using FastF1 telemetry data",
@@ -107,3 +110,80 @@ def predict(lap: LapInput):
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/race-analysis/{year}/{round_number}")
+def race_analysis(year: int, round_number: int):
+    try:
+
+        df = pd.read_csv(Path("data/processed") / f"features_{year}.csv")
+        race = df[df["RoundNumber"] == round_number]
+
+        if race.empty:
+            raise HTTPException(status_code=404, detail="Race not found")
+
+        # available drivers
+        drivers = race["Driver"].unique().tolist()
+        event_name = race["EventName"].iloc[0]
+        total_laps = int(race["total_laps"].iloc[0])
+
+        return {
+            "year": year,
+            "round_number": round_number,
+            "event_name": event_name,
+            "total_laps": total_laps,
+            "drivers": drivers
+        }
+
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail=f"No data for year {year}")
+
+
+@app.get("/driver-laps/{year}/{round_number}/{driver}")
+def driver_laps(year: int, round_number: int, driver: str):
+    try:
+        import pandas as pd
+        from pathlib import Path
+
+        df = pd.read_csv(Path("data/processed") / f"features_{year}.csv")
+        race = df[(df["RoundNumber"] == round_number) & (df["Driver"] == driver)]
+
+        if race.empty:
+            raise HTTPException(status_code=404, detail="Driver not found")
+
+        # running predictions for all laps
+
+        laps = []
+        for _, row in race.iterrows():
+            features = np.array([[
+                row["current_lap"], row["total_laps"], row["stint_length"],
+                row["compound"], row["pace_delta_3lap"], row["pace_delta_5lap"],
+                row["Position"], row["gap_ahead"],
+                row["gap_behind"] if pd.notna(row["gap_behind"]) else 0.0,
+                row["pit_stop_count"], int(row["safety_car_active"]),
+                row["track_temp"], int(row["rain"])
+            ]])
+
+            features_scaled = scaler.transform(features)
+            x = torch.FloatTensor(features_scaled)
+
+            with torch.no_grad():
+                pit_logit, _, _ = model(x)
+                pit_prob = torch.sigmoid(pit_logit).item()
+
+            laps.append({
+                "lap": int(row["current_lap"]),
+                "stint_length": int(row["stint_length"]),
+                "compound": int(row["compound"]),
+                "pit_probability": round(pit_prob, 3),
+                "actual_pit": int(row["label"]),
+                "position": int(row["Position"]) if pd.notna(row["Position"]) else None,
+            })
+
+        return {
+            "driver": driver,
+            "event_name": race["EventName"].iloc[0],
+            "laps": laps
+        }
+
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail=f"No data for year {year}")
