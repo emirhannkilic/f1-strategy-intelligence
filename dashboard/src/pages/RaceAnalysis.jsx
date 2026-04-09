@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import LapChart from "../components/LapChart";
+import StrategyCompare from "../components/StrategyCompare";
 
 const API_BASE = "http://127.0.0.1:8000";
 
@@ -14,6 +15,7 @@ export default function RaceAnalysis() {
   const [laps, setLaps] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [compareData, setCompareData] = useState(null);
 
   const fetchRace = async () => {
     setLoading(true);
@@ -33,9 +35,14 @@ export default function RaceAnalysis() {
   const fetchDriverLaps = async (driver) => {
     setSelectedDriver(driver);
     setLaps(null);
+    setCompareData(null);
     try {
-      const res = await axios.get(`${API_BASE}/driver-laps/${year}/${round}/${driver}`);
-      setLaps(res.data.laps);
+      const [lapsRes, compareRes] = await Promise.all([
+        axios.get(`${API_BASE}/driver-laps/${year}/${round}/${driver}`),
+        axios.get(`${API_BASE}/compare-strategies/${year}/${round}/${driver}`)
+      ]);
+      setLaps(lapsRes.data.laps);
+      setCompareData(compareRes.data);
     } catch {
       setError("Failed to load driver data.");
     }
@@ -108,6 +115,7 @@ export default function RaceAnalysis() {
               <div className="card">
                 <h2>{selectedDriver} — Pit Probability</h2>
                 <LapChart laps={laps} />
+                <StrategyCompare data={compareData} />
               </div>
             )}
           </>

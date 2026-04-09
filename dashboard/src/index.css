@@ -358,3 +358,55 @@ body {
   letter-spacing: 0.15em;
   margin-bottom: 1rem;
 }
+
+.strategy-compare {
+  margin-top: 1.5rem;
+}
+
+.compare-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.compare-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.compare-title {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 0.25rem;
+}
+
+.window-badge {
+  padding: 0.5rem 0.75rem;
+  border-radius: 4px;
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  border: 1px solid var(--border);
+}
+
+.window-badge.actual {
+  border-color: var(--green);
+  color: var(--green);
+  background: rgba(0, 200, 83, 0.08);
+}
+
+.window-badge.model {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: rgba(225, 6, 0, 0.08);
+}
+
+.no-data {
+  color: var(--text-muted);
+  font-family: var(--mono);
+  font-size: 0.8rem;
+}
