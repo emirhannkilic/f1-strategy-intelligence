@@ -187,3 +187,63 @@ def driver_laps(year: int, round_number: int, driver: str):
 
     except FileNotFoundError:
         raise HTTPException(status_code=404, detail=f"No data for year {year}")
+
+@app.get("/compare-strategies/{year}/{round_number}/{driver}")
+def compare_strategies(year: int, round_number: int, driver: str):
+    try:
+        df = pd.read_csv(Path("data/processed") / f"features_{year}.csv")
+        race = df[(df["RoundNumber"] == round_number) & (df["Driver"] == driver)]
+
+        if race.empty:
+            raise HTTPException(status_code=404, detail="Driver not found")
+
+        actual_pits = []
+        model_pits = []
+
+        for _, row in race.iterrows():
+            features = np.array([[
+                row["current_lap"], row["total_laps"], row["stint_length"],
+                row["compound"], row["pace_delta_3lap"], row["pace_delta_5lap"],
+                row["Position"], row["gap_ahead"],
+                row["gap_behind"] if pd.notna(row["gap_behind"]) else 0.0,
+                row["pit_stop_count"], int(row["safety_car_active"]),
+                row["track_temp"], int(row["rain"])
+            ]])
+
+            features_scaled = scaler.transform(features)
+            x = torch.FloatTensor(features_scaled)
+
+            with torch.no_grad():
+                pit_logit, _, _ = model(x)
+                pit_prob = torch.sigmoid(pit_logit).item()
+
+            if row["label"] == 1:
+                actual_pits.append(int(row["current_lap"]))
+
+            if pit_prob > 0.20:
+                model_pits.append(int(row["current_lap"]))
+
+        # Deduplicate consecutive laps into pit windows
+        def to_windows(laps):
+            if not laps:
+                return []
+            windows = []
+            start = laps[0]
+            prev = laps[0]
+            for lap in laps[1:]:
+                if lap > prev + 1:
+                    windows.append({"start": start, "end": prev})
+                    start = lap
+                prev = lap
+            windows.append({"start": start, "end": prev})
+            return windows
+
+        return {
+            "driver": driver,
+            "event_name": race["EventName"].iloc[0],
+            "actual_pit_windows": to_windows(sorted(set(actual_pits))),
+            "model_pit_windows": to_windows(sorted(set(model_pits))),
+        }
+
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail=f"No data for year {year}")
