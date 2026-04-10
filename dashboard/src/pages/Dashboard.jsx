@@ -17,7 +17,7 @@ export default function Dashboard() {
     try {
       const [predRes, explainRes] = await Promise.all([
         predictPit(formData),
-        axios.post("http://127.0.0.1:8000/explain", formData)
+        axios.post("https://f1-strategy-intelligence-production.up.railway.app/explain", formData)
       ]);
       setResult(predRes);
       setImportance(explainRes.data.feature_importance);

@@ -3,7 +3,7 @@ import axios from "axios";
 import LapChart from "../components/LapChart";
 import StrategyCompare from "../components/StrategyCompare";
 
-const API_BASE = "http://127.0.0.1:8000";
+const API_BASE = "https://f1-strategy-intelligence-production.up.railway.app";
 
 const SEASONS = [2019, 2020, 2021, 2022, 2023, 2024];
 

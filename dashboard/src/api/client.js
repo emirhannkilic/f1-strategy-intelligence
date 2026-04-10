@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_BASE = "http://127.0.0.1:8000";
+const API_BASE = "https://f1-strategy-intelligence-production.up.railway.app";
 
 export const predictPit = async (lapData) => {
   const response = await axios.post(`${API_BASE}/predict`, lapData);
