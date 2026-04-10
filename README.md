@@ -7,11 +7,11 @@ and recommends optimal pit stop windows using a PyTorch multi-output model.
 
 ## Status
 
-In active development — Sprint 3 in progress
+In active development — Sprint 4 in progress
 
 - [x] **Sprint 1** - Data pipeline + EDA 
 - [x] **Sprint 2** - PyTorch model + backtest
-- [ ] **Sprint 3** - FastAPI + React dashboard
+- [x] **Sprint 3** - FastAPI + React dashboard
 - [ ] **Sprint 4** - Deploy + documentation 
 
 ---
