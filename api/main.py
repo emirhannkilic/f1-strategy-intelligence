@@ -230,7 +230,7 @@ def compare_strategies(year: int, round_number: int, driver: str):
             if row["label"] == 1:
                 actual_pits.append(int(row["current_lap"]))
 
-            if pit_prob > 0.20:
+            if pit_prob > 0.45:
                 model_pits.append(int(row["current_lap"]))
 
         # deduplicate consecutive laps into pit windows

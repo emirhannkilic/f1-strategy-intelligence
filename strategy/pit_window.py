@@ -7,7 +7,7 @@ def recommend_pit_window(
     total_laps: int,
     pit_probability: float,
     estimated_remaining: int,
-    threshold: float = 0.20
+    threshold: float = 0.45
 ) -> dict:
 
     # recommend a pit window based on model output and degradation estimate
@@ -34,7 +34,7 @@ def recommend_pit_window(
     }
 
 
-def apply_pit_windows(df: pd.DataFrame, threshold: float = 0.20) -> pd.DataFrame:
+def apply_pit_windows(df: pd.DataFrame, threshold: float = 0.45) -> pd.DataFrame:
     
     # applying pit window recommendations to a full race dataframe
     # requires pit_probability and estimated_remaining columns

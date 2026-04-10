@@ -68,7 +68,7 @@ import {
             {pitLaps.map((lap) => (
               <ReferenceLine key={lap} x={lap} stroke="#e10600" strokeDasharray="3 3" strokeOpacity={0.4} />
             ))}
-            <ReferenceLine y={0.20} stroke="#666" strokeDasharray="4 4" label={{ value: "threshold", fill: "#444", fontSize: 10 }} />
+            <ReferenceLine y={0.45} stroke="#666" strokeDasharray="4 4" label={{ value: "threshold", fill: "#444", fontSize: 10 }} />
             <Line
               type="monotone"
               dataKey="pit_probability"

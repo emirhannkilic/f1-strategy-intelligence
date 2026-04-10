@@ -4,7 +4,6 @@ __pycache__/
 .env
 data/real/*.csv
 data/processed/*.csv
-models/*.pt
 .fastf1_cache/
 *.ipynb_checkpoints
 .DS_Store

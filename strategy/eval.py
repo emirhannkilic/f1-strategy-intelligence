@@ -21,7 +21,7 @@ FEATURE_COLS = [
     "safety_car_active", "track_temp", "rain"
 ]
 
-THRESHOLD = 0.20
+THRESHOLD = 0.45
 
 
 def load_model_and_scaler():
