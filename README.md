@@ -1,6 +1,6 @@
 # F1 Strategy Intelligence System
 
-Demo
+![Demo](assets/demo.gif)
 
 A machine learning system that analyzes real F1 telemetry data via the FastF1 API
 and recommends optimal pit stop windows using a PyTorch multi-output model.
