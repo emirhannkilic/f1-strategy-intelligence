@@ -17,6 +17,13 @@ from strategy.degradation import estimate_remaining_stint
 import pandas as pd
 from pathlib import Path
 
+import shap
+
+explainer = shap.Explainer(
+    lambda x: torch.sigmoid(model(torch.FloatTensor(x))[0]).detach().numpy(),
+    shap.maskers.Independent(np.zeros((1, 13)))
+)
+
 app = FastAPI(
     title="F1 Strategy Intelligence API",
     description="Real-time pit stop strategy recommendations using FastF1 telemetry data",
@@ -25,7 +32,10 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "https://f1-strategy-intelligence.vercel.app",
+        "http://localhost:5173"
+    ],
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -223,7 +233,7 @@ def compare_strategies(year: int, round_number: int, driver: str):
             if pit_prob > 0.20:
                 model_pits.append(int(row["current_lap"]))
 
-        # Deduplicate consecutive laps into pit windows
+        # deduplicate consecutive laps into pit windows
         def to_windows(laps):
             if not laps:
                 return []
@@ -247,3 +257,39 @@ def compare_strategies(year: int, round_number: int, driver: str):
 
     except FileNotFoundError:
         raise HTTPException(status_code=404, detail=f"No data for year {year}")
+
+@app.post("/explain")
+def explain(lap: LapInput):
+    try:
+        features = np.array([[
+            lap.current_lap, lap.total_laps, lap.stint_length,
+            lap.compound, lap.pace_delta_3lap, lap.pace_delta_5lap,
+            lap.position, lap.gap_ahead, lap.gap_behind,
+            lap.pit_stop_count, int(lap.safety_car_active),
+            lap.track_temp, int(lap.rain)
+        ]])
+
+        features_scaled = scaler.transform(features)
+        shap_values = explainer(features_scaled)
+
+        feature_names = [
+            "current_lap", "total_laps", "stint_length", "compound",
+            "pace_delta_3lap", "pace_delta_5lap", "position",
+            "gap_ahead", "gap_behind", "pit_stop_count",
+            "safety_car_active", "track_temp", "rain"
+        ]
+
+        importance = [
+            {
+                "feature": name,
+                "shap_value": round(float(shap_values.values[0][i]), 4)
+            }
+            for i, name in enumerate(feature_names)
+        ]
+
+        importance.sort(key=lambda x: abs(x["shap_value"]), reverse=True)
+
+        return {"feature_importance": importance}
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
