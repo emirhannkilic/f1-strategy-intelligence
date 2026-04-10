@@ -2,18 +2,25 @@ import { useState } from "react";
 import { predictPit } from "../api/client";
 import PitForm from "../components/PitForm";
 import PitResult from "../components/PitResult";
+import ShapChart from "../components/ShapChart";
+import axios from "axios";
 
 export default function Dashboard() {
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [importance, setImportance] = useState(null);
 
   const handlePredict = async (formData) => {
     setLoading(true);
     setError(null);
     try {
-      const data = await predictPit(formData);
-      setResult(data);
+      const [predRes, explainRes] = await Promise.all([
+        predictPit(formData),
+        axios.post("http://127.0.0.1:8000/explain", formData)
+      ]);
+      setResult(predRes);
+      setImportance(explainRes.data.feature_importance);
     } catch (err) {
       setError("Failed to connect to API. Make sure the backend is running.");
     } finally {
@@ -42,7 +49,10 @@ export default function Dashboard() {
             <h2>Strategy Output</h2>
             {error && <p className="error">{error}</p>}
             {result ? (
+              <>
               <PitResult result={result} />
+              <ShapChart importance={importance} /> 
+              </>
             ) : (
               <p className="placeholder">Submit lap data to see recommendations.</p>
             )}

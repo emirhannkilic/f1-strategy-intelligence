@@ -410,3 +410,57 @@ body {
   font-family: var(--mono);
   font-size: 0.8rem;
 }
+
+.shap-chart {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+}
+
+.shap-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.shap-row {
+  display: grid;
+  grid-template-columns: 130px 1fr 60px;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.shap-name {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  text-align: right;
+}
+
+.shap-bar-container {
+  height: 6px;
+  background: var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.shap-bar {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.4s ease;
+}
+
+.shap-bar.positive {
+  background: var(--accent);
+}
+
+.shap-bar.negative {
+  background: #4a90d9;
+}
+
+.shap-value {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
